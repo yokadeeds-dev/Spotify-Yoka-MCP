@@ -37,3 +37,7 @@ npm-debug.log*
 # Temp / test files
 test.txt
 run_scan.mjs
+gc.bat
+gc_out.txt
+git_init.bat
+git_output.txt
