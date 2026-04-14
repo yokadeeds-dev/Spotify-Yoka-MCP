@@ -1,0 +1,17 @@
+{
+  "name": "spotify-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP Server for Spotify Web API – playlist scan, genre categorization, new releases",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.3.3",
+    "zod": "^3.22.4"
+  }
+}
