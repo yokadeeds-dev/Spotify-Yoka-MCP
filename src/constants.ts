@@ -12,6 +12,8 @@ export const REDIRECT_URI = 'http://127.0.0.1:8765/callback';
 export const SCOPES = [
   'playlist-read-private',
   'playlist-read-collaborative',
+  'playlist-modify-public',
+  'playlist-modify-private',
   'user-follow-read',
   'user-library-read',
   'user-top-read',

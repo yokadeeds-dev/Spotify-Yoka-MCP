@@ -141,6 +141,60 @@ export class SpotifyClient {
     return data.albums.items;
   }
 
+  // ── Search ────────────────────────────────────────────────────────────────
+
+  /** Search for a track, returns best match or null */
+  async searchTrack(
+    title: string,
+    artist?: string
+  ): Promise<SpotifyApiTrack | null> {
+    const q = artist
+      ? `track:${encodeURIComponent(title)} artist:${encodeURIComponent(artist)}`
+      : encodeURIComponent(title);
+    const data = await this.apiFetch<{
+      tracks: SpotifyPagingObject<SpotifyApiTrack>;
+    }>(`/search?q=${q}&type=track&limit=1`);
+    return data.tracks.items[0] ?? null;
+  }
+
+  // ── Playlist management ───────────────────────────────────────────────────
+
+  /** Create a new playlist for the current user */
+  async createPlaylist(
+    userId: string,
+    name: string,
+    description = 'Created by Spotify MCP Server'
+  ): Promise<{ id: string; name: string; external_urls: { spotify: string } }> {
+    return this.apiFetch(`/users/${userId}/playlists`, {
+      method: 'POST',
+      body: JSON.stringify({ name, description, public: false }),
+    });
+  }
+
+  /** Add track URIs to a playlist (max 100 per call) */
+  async addTracksToPlaylist(
+    playlistId: string,
+    uris: string[]
+  ): Promise<void> {
+    for (let i = 0; i < uris.length; i += 100) {
+      await this.apiFetch(`/playlists/${playlistId}/tracks`, {
+        method: 'POST',
+        body: JSON.stringify({ uris: uris.slice(i, i + 100) }),
+      });
+    }
+  }
+
+  /** Get existing playlist by ID (to verify it exists) */
+  async getPlaylist(
+    playlistId: string
+  ): Promise<{ id: string; name: string } | null> {
+    try {
+      return await this.apiFetch(`/playlists/${playlistId}?fields=id,name`);
+    } catch {
+      return null;
+    }
+  }
+
   /** Albums released by a given artist within the last `daysBack` days */
   async getArtistRecentAlbums(
     artistId: string,

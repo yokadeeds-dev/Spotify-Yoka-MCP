@@ -36,6 +36,11 @@ import {
   handleGetReleasesFromLibrary,
 } from './tools/releases_tools.js';
 
+import {
+  TOOL_IMPORT_FOLDER,
+  handleImportFolder,
+} from './tools/import_tools.js';
+
 // ── Server setup ─────────────────────────────────────────────────────────────
 
 const server = new Server(
@@ -62,6 +67,7 @@ const ALL_TOOLS = [
   TOOL_LIST_GENRES,
   TOOL_GET_NEW_RELEASES,
   TOOL_GET_RELEASES_FROM_LIBRARY,
+  TOOL_IMPORT_FOLDER,
 ];
 
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
@@ -127,6 +133,17 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         text = await handleGetReleasesFromLibrary(
           a['days_back'] != null ? Number(a['days_back']) : undefined,
           a['max_artists'] != null ? Number(a['max_artists']) : undefined
+        );
+        break;
+
+      // Import
+      case 'spotify_import_folder':
+        text = await handleImportFolder(
+          a['folder_path'] as string,
+          a['playlist_name'] as string | undefined,
+          a['playlist_id'] as string | undefined,
+          a['dry_run'] != null ? Boolean(a['dry_run']) : undefined,
+          a['recursive'] != null ? Boolean(a['recursive']) : undefined
         );
         break;
 
